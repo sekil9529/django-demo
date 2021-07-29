@@ -10,14 +10,17 @@ from libs.error_code.exception import ECException
 
 @api_view()
 def hello(request: Request):
-    return response_ok('hello word!')
+    """hello world"""
+    return response_ok('hello world!')
 
 
 @api_view()
 def error_unknown(request: Request):
+    """未知异常"""
     raise
 
 
 @api_view()
 def error_test(request: Request):
+    """错误码异常"""
     raise ECException(ECEnum.TestError)
