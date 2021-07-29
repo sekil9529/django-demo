@@ -215,3 +215,16 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+
+# DRF
+REST_FRAMEWORK = {
+    # 全局认证类
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    # 全局异常处理
+    'EXCEPTION_HANDLER': 'core.drf.exception_handlers.handler',
+    # 更改默认 request.user = None 原本为 'AnonymousUser'
+    'UNAUTHENTICATED_USER': None,
+    # 更改默认 request.auth = None
+    'UNAUTHENTICATED_TOKEN': None,
+}

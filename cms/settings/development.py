@@ -40,3 +40,7 @@ DATABASES = {
     }
 }
 
+# DRF
+REST_FRAMEWORK.update({
+
+})

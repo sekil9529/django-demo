@@ -21,8 +21,4 @@ class UserView(APIView):
         return
 
 
-@api_view()
-def test(request: Request):
-    print(type(request))
-    print(request.ext)
-    return response_ok()
+
