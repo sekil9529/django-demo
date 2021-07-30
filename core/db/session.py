@@ -2,7 +2,10 @@
 
 import warnings
 from contextlib import contextmanager
-from MySQLdb.cursors import DictCursor
+try:
+    from MySQLdb.cursors import DictCursor
+except ImportError:
+    from pymysql.cursors import DictCursor
 from django.db import connections
 
 from libs.singleton import SingletonType

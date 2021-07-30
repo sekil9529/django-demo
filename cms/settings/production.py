@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 # app
 INSTALLED_APPS += [
-    'djorm_pool',
+    'core.djorm_pool',
     'app_demo',
     'app_user',
     'app_ugc',
@@ -21,7 +21,7 @@ INSTALLED_APPS += [
 
 # 中间件
 MIDDLEWARE += [
-
+    'core.middlewares.timer.TimerMiddleware',
 ]
 
 # DJORM POOL
