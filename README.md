@@ -42,7 +42,7 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + mysqlclient-2.0.3 + djorm-ext-pool-
 │   ├── settings                 # settings.py 重构
 │   │   ├── base.py              # 通用配置信息
 │   │   ├── development.py       # 开发环境配置
-│   │   ├── __init__.py          # pymysql.install_as_MySQLdb()
+│   │   ├── __init__.py
 │   │   └── production.py        # 生产环境配置
 │   ├── urls.py                  # 主路由
 │   └── wsgi.py                  # wsgi文件，扩展WSGIRequest
