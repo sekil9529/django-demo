@@ -14,6 +14,7 @@ ALLOWED_HOSTS = ['*']
 # app
 INSTALLED_APPS += [
     'rest_framework',
+    'djorm_pool',
     'app_demo',
     'app_user',
     'app_ugc',
@@ -24,6 +25,14 @@ MIDDLEWARE += [
     'core.middlewares.timer.TimerMiddleware'
 ]
 
+# DJORM POOL
+DJORM_POOL_OPTIONS = {
+    "pool_size": 10,
+    "max_overflow": 0,
+    "recycle": 60 * 60 * 2
+}
+DJORM_POOL_PESSIMISTIC = False
+
 # 数据配置
 DATABASES = {
     'default': {
@@ -33,7 +42,7 @@ DATABASES = {
         'PORT': CONFIG_INFO['db']['port'],
         'USER': CONFIG_INFO['db']['user'],
         'PASSWORD': CONFIG_INFO['db']['password'],
-        'CONN_MAX_AGE': 60 * 60 * 2,
+        # 'CONN_MAX_AGE': 60 * 60 * 2,
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': 'set session transaction_isolation = "READ-COMMITTED"'
