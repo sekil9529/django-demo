@@ -195,7 +195,7 @@ port = 3306
 database =
 ```
 
-# 3.初始化配置
+# 3.初始化db
 
 ```shell script
 python manage.py makemigrations
