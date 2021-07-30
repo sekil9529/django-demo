@@ -26,7 +26,7 @@ MIDDLEWARE += [
 
 # DJORM POOL
 DJORM_POOL_OPTIONS = {
-    "pool_size": 10,
+    "pool_size": 20,
     "max_overflow": 0,
     "recycle": 60 * 60 * 2
 }
