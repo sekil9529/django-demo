@@ -216,11 +216,17 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 
-
+# from rest_framework.versioning import URLPathVersioning
 # DRF
 REST_FRAMEWORK = {
     # 全局认证类
     'DEFAULT_AUTHENTICATION_CLASSES': [],
+    # 默认版本类
+    'DEFAULT_VERSIONING_CLASS': 'core.drf.version.URLPathVersioning',
+    # 默认版本
+    'DEFAULT_VERSION': 'v1',
+    # 允许的版本号
+    'ALLOWED_VERSIONS': ('v1',),
     # 全局异常处理
     'EXCEPTION_HANDLER': 'core.drf.exception_handlers.handler',
     # 更改默认 request.user = None 原本为 'AnonymousUser'

@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 # app
 INSTALLED_APPS += [
-    'corsheaders',  # 跨域
+    'app_demo',
     'app_user',
     'app_ugc',
 ]

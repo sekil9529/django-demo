@@ -10,3 +10,8 @@ class ECEnum(BaseECEnum):
     ServerError = ('500', '服务异常，请稍后重试')
 
     TestError = ('TEST', '测试错误')
+
+    # 无效版本号
+    InvalidVersion = ('420', '无效的版本号')
+    # 用户
+    UserExist = ('1000', '已存在的用户')

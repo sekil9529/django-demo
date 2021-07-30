@@ -1,12 +1,10 @@
 # coding: utf-8
 
-from django.urls import path
-from .views.demo import hello, error_unknown, error_test
+from django.urls import re_path, path
+from .views.user import UsersView
 
 
 # demo
 urlpatterns = [
-    path('demo/hello', hello),
-    path('demo/error/unknown', error_unknown),
-    path('demo/error/test', error_test),
+    path('', UsersView.as_view(), name='users')
 ]

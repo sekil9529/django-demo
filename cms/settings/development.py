@@ -14,6 +14,7 @@ ALLOWED_HOSTS = ['*']
 # app
 INSTALLED_APPS += [
     'rest_framework',
+    'app_demo',
     'app_user',
     'app_ugc',
 ]
