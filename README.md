@@ -50,10 +50,11 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2
 ├── core                         # 扩展的django核心库
 
 │   ├── db                       # 数据库相关
-│   │   ├── enum.py              # 枚举
+│   │   ├── enum.py              # 枚举类
 │   │   ├── functions.py         # 函数相关
 │   │   ├── __init__.py
 │   │   ├── models.py            # 模型字段相关
+│   │   ├── djorm_pool.py        # mysql连接池，搬运自 djorm-ext-pool==0.8.2，微小修改使支持Python-3.x
 │   │   └── session.py           # 原生SQL扩展类
 
 │   ├── drf                      # djangorestframework框架相关
