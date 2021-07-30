@@ -2,10 +2,10 @@
 
 使用 nginx + uwsgi + gevent 启动的 Django 脚手架
 
-Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + djorm-ext-pool-0.8.2
+Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2
 
 
-# 项目文件组织结构
+# 文件组织结构
 
 ```
 .django-demo
@@ -38,7 +38,7 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + djorm-ext-pool-0.8.
 │       └── user.py
 
 ├── cms                          # 主目录
-│   ├── __init__.py
+│   ├── __init__.py              # pymysql.install_as_MySQLdb()
 │   ├── settings                 # settings.py 重构
 │   │   ├── base.py              # 通用配置信息
 │   │   ├── development.py       # 开发环境配置
@@ -96,6 +96,7 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + djorm-ext-pool-0.8.
 ├── manage.py                    # 项目启动
 ...
 ```
+
 # 项目特点
 
 1. 重构settings.py，开发环境与生产环境配置剥离: `cms.settings`
@@ -147,3 +148,120 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + djorm-ext-pool-0.8.
                   # return hash(tuple(sorted(self.items())))
                   return hash(frozenset(self))
       ```
+
+# 接口说明
+
+### 1.app_demo
+
+- /api/v1/demos/hello/
+    - hello world
+- /api/v1/demos/error/test/
+    - 测试错误码异常
+- /api/v1/demos/error/unknown/
+    - 测试未知异常
+    
+### 2.app_user
+
+- /api/v1/users/
+    - GET: 用户列表
+    - POST: 新增用户
+- /api/v1/users/{user_id}
+    - GET: 单个用户信息
+    - PATCH: 修改用户信息
+
+### 3.app_ugc
+
+- 仅展示跨app外键定义方式
+
+# 使用与部署
+
+### 1.安装依赖模块
+
+```shell script
+python -m pip install -r requirements.txt
+```
+
+### 2.配置 .env
+
+```shell script
+cp .env_bak .env
+
+vim .env
+[db]
+user =
+password =
+host =
+port = 3306
+database =
+```
+
+# 3.初始化配置
+python manage.py makemigrations
+python manage.py migrate
+
+### 4.uwsgi配置
+
+- uwsgi.ini
+
+```
+[uwsgi]
+# 进程
+procname-prefix = djangoDemo      # 进程前缀
+master = true                     # 开启主进程
+workers = 2                       # 工作进程数量，建议设置为 CPU core 数
+pidfile = .../uwsgi.pid           # pid文件位置，记录进程id，用于uwsgi关闭
+vacuum = true                     # 服务停止时自动移除pid
+
+# 启动
+socket = 127.0.0.1:8000           # socket
+daemonize = .../uwsgi.log         # 后台启动，日志位置
+
+# 项目位置
+chdir = .../django-demo           # 项目根目录
+module = cms.wsgi:application     # 指定app
+
+# gevent配置
+enable-threads = true             # 开启多线程，gevent下必须开启
+gevent = 100                      # 单个进程最大协程数
+gevent-early-monkey-patch = true  # 在加载app前自动打猴子补丁，必须设置为true
+
+# 配置优化
+max-requests = 10000              # 单个工作进程最大处理请求次数，之后重新加载
+lazy-apps = true                  # 在每个worker中加载app而不是master，如果设置为false，master加载app，然后fork给每个worker
+cpu-affinity = true               # 进程运行期时不切换 CPU core
+thunder-lock = true               # 序列化 accept() 用法（如果可能）
+socket-timeout = 30               # 连接超时时间，超时断开与客户端的连接，但是服务器端仍然运行
+harakiri = 30                     # 服务器响应超时时间，超时服务器强制终止
+harakiri-verbose = true           # 输出harakiri详细信息
+disable-logging = false           # 关闭request日志，生产环境建议关闭（true）
+memory-report = true              # 日志中输出内存占用情况，必须开启request日志，生产环境建议关闭（false）
+reload-on-as = 600                # 单次请求worker占用虚拟内存（单位M）上限，超过时该次结果返回后重启worker
+reload-on-rss = 100               # 单次请求worker占用物理内存（单位M）上限，超过时该次结果返回后重启worker
+``` 
+
+- uwsgi启动
+
+```shell script
+uwsgi --ini uwsgi.ini
+```
+
+### 5.nginx配置
+
+- nginx配置
+
+```
+# .../nginx.conf
+server {
+    ...
+    location / {
+        include .../nginx/conf/uwsgi_params;
+        uwsgi_pass 127.0.0.1:8000;
+    }
+}
+```
+
+- nginx载入配置
+
+```shell script
+nginx -s reload
+```
