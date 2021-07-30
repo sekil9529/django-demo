@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from datetime import datetime
+
 from django.db.models import QuerySet
 from django.db.transaction import atomic
 from django.http import JsonResponse
@@ -45,3 +47,24 @@ class UsersView(APIView):
         data.name = obj.name
         data.userType = obj.user_type
         return response_ok(data)
+
+
+class UserView(APIView):
+    """单个用户"""
+
+    def get(self, request: Request, user_id: str, *args, **kwargs):
+        obj = User.objects.get(user_id=user_id)
+        data = ExtDict()
+        data.userId = obj.user_id
+        data.name = obj.name
+        data.userType = obj.user_type
+        return response_ok(data)
+
+    @atomic()
+    def patch(self, request: Request, user_id: str, *args, **kwargs):
+        name = request.data.get('name')
+        now = datetime.now()
+        if User.objects.exclude(user_id=user_id).filter(is_deleted=0, name=name).exists():
+            raise ECException(ECEnum.UserExist)
+        User.objects.filter(user_id=user_id).update(update_time=now, name=name)
+        return response_ok()
