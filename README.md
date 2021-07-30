@@ -2,7 +2,7 @@
 
 使用 nginx + uwsgi + gevent 启动的 Django 脚手架
 
-Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2
+Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + SQLAlchemy-1.4.22
 
 
 # 文件组织结构
