@@ -5,6 +5,7 @@ from django.http import JsonResponse
 
 from .base import BaseExcHandler
 from .error_code import ErrorCodeExcHandler
+from .method import MethodExcHandler
 from .unknown import UnknownExcHandler
 from core.response import response_fail
 
@@ -12,6 +13,7 @@ from core.response import response_fail
 # 异常处理实例列表
 _EXC_HANDLER_LIST: List[BaseExcHandler] = sorted((
     UnknownExcHandler(),
+    MethodExcHandler(),
     ErrorCodeExcHandler(),
 ), key=lambda x: x.get_exception() is Exception)
 
