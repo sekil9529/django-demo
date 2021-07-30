@@ -137,7 +137,7 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2
       wsgi_handler_bind_ext_request_class()
       ```
 
-10. 搬运 `djorm-ext-pool`，为 uwsgi + gevent 环境提供数据库连接池：`core.db.djorm_pool`
+10. 搬运 `djorm-ext-pool==0.8.2`，为 uwsgi + gevent 环境提供数据库连接池：`core.db.djorm_pool`
 
     - `djorm-ext-pool` 仅支持Python-2.x，需要修改部分源码使支持 Python-3.x
       
