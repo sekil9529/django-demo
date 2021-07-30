@@ -196,8 +196,11 @@ database =
 ```
 
 # 3.初始化配置
+
+```shell script
 python manage.py makemigrations
 python manage.py migrate
+```
 
 ### 4.uwsgi配置
 
