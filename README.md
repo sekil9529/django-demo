@@ -118,21 +118,21 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + mysqlclient-2.0.3 + djorm-ext-pool-
 
 8. 扩展更多mysql字段类型，使创建表的字段类型更规范，但是仍然推荐手动建表：`core.db.models`
 
-  - Django migrate 的缺陷
-    - 无法生成表注释
-    - 无法生成字段注释
-    - 索引名称无法指定
-    - Django内置的ORM字段类型不丰富、不严谨
+    - Django migrate 的缺陷
+        - 无法生成表注释
+        - 无法生成字段注释
+        - 索引名称无法指定
+        - Django内置的ORM字段类型不丰富、不严谨
 
 9. 参考 `Sanic Request` 对 `Django WSGIRequest` 进行扩展：`core.wsgi`
 
-  - WSGIRequest实例增加 ext命名空间，用于自定义临时变量与WSGIRequest的绑定
-  - 需要在 `cms.wsgi`, `application = get_wsgi_application()` 之前导入
+    - WSGIRequest实例增加 ext命名空间，用于自定义临时变量与WSGIRequest的绑定
+    - 需要在 `cms.wsgi`, `application = get_wsgi_application()` 之前导入
   
-    ```python
-    from core.wsgi import wsgi_handler_bind_ext_request_class
-    
-    wsgi_handler_bind_ext_request_class()
-    ```
+      ```python
+      from core.wsgi import wsgi_handler_bind_ext_request_class
+
+      wsgi_handler_bind_ext_request_class()
+      ```
 
 10. 使用 djorm-ext-pool 模块，为 uwsgi + gevent 环境提供数据库连接池
