@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 # app
 INSTALLED_APPS += [
-    'core.djorm_pool',
+    'core.db.djorm_pool',
     'app_demo',
     'app_user',
     'app_ugc',

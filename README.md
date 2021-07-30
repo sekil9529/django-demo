@@ -2,7 +2,7 @@
 
 使用 nginx + uwsgi + gevent 启动的 Django 脚手架
 
-Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + mysqlclient-2.0.3 + djorm-ext-pool-0.8.2
+Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + djorm-ext-pool-0.8.2
 
 
 # 项目文件组织结构
@@ -135,4 +135,15 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + mysqlclient-2.0.3 + djorm-ext-pool-
       wsgi_handler_bind_ext_request_class()
       ```
 
-10. 使用 djorm-ext-pool 模块，为 uwsgi + gevent 环境提供数据库连接池
+10. 修改 `djorm-ext-pool`，为 uwsgi + gevent 环境提供数据库连接池：`core.db.djorm_pool`
+
+    - `djorm-ext-pool` 仅支持Python-2.x，需要修改源码
+      
+      ```python
+      def patch_mysql():
+    
+          class hashabledict(dict):
+              def __hash__(self):
+                  # return hash(tuple(sorted(self.items())))
+                  return hash(frozenset(self))
+      ```
