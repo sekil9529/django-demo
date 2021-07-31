@@ -1,9 +1,17 @@
 # django-demo
 
-使用 nginx + uwsgi + gevent 启动的 Django 脚手架
+Django 脚手架，settings拆分，models拆分
+nginx + uwsgi(gevnet) 部署
 
-Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + SQLAlchemy-1.4.22
+# 环境
 
+- Python-3.7.10
+    - Django==2.2.24
+    - djangorestframework==3.12.4
+    - PyMySQL==1.0.2
+    - django-mysql-geventpool==0.2.5
+- uwsgi-2.0.19
+- nginx-1.19.10
 
 # 文件组织结构
 
@@ -54,7 +62,6 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + SQLAlchemy-1.4.22
 │   │   ├── functions.py         # 函数相关
 │   │   ├── __init__.py
 │   │   ├── models.py            # 模型字段相关
-│   │   ├── djorm_pool.py        # mysql连接池，搬运自 djorm-ext-pool==0.8.2，微小修改使支持Python-3.x
 │   │   └── session.py           # 原生SQL扩展类
 
 │   ├── drf                      # djangorestframework框架相关
@@ -137,18 +144,36 @@ Python-3.7.10 + Django-2.2.24 + DRF-3.12.4 + pymysql-1.0.2 + SQLAlchemy-1.4.22
       wsgi_handler_bind_ext_request_class()
       ```
 
-10. 搬运 `djorm-ext-pool==0.8.2`，为 uwsgi + gevent 环境提供数据库连接池：`core.db.djorm_pool`
+10. 使用 `django-mysql-geventpool==0.2.5` 作为mysql连接池
 
-    - `djorm-ext-pool` 仅支持Python-2.x，需要修改部分源码使支持 Python-3.x
-      
-      ```python
-      def patch_mysql():
+- 地址：https://github.com/shunsukeaihara/django-mysql-geventpool
+
+- 个人配置
+
+    ```
+    # cms/settings/development.py
+    INSTALLED_APPS += [
+        'django_mysql_geventpool',
+        ...
+    ]
     
-          class hashabledict(dict):
-              def __hash__(self):
-                  # return hash(tuple(sorted(self.items())))
-                  return hash(frozenset(self))
-      ```
+    # 自定义全局变量，为了与django配置区分开
+    GEVENT_POOL = {
+        'MAX_CONNS': 25,  # 最大连接数
+        'MAX_LIFETIME': 60 * 60 * 2,  # 连接时间
+    }
+  
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django_mysql_geventpool.backends.mysql',
+            # 'CONN_MAX_AGE': 60 * 60 * 2,  
+            'OPTIONS': {
+                ...
+                **GEVENT_POOL
+            }
+        }
+    }
+    ```
 
 # 接口说明
 
@@ -205,42 +230,75 @@ python manage.py migrate
 
 ### 4.uwsgi配置
 
-- uwsgi.ini
+- 安装uwsgi
+
+```shell script
+python -m pip install uwsgi==2.0.19
+```
+
+- 配置文件uwsgi.ini
 
 ```
 [uwsgi]
 # 进程
-procname-prefix = djangoDemo      # 进程前缀
-master = true                     # 开启主进程
-workers = 2                       # 工作进程数量，建议设置为 CPU core 数
-pidfile = .../uwsgi.pid           # pid文件位置，记录进程id，用于uwsgi关闭
-vacuum = true                     # 服务停止时自动移除pid
+# 进程前缀
+procname-prefix = djangoDemo
+# 开启主进程
+master = true
+# 工作进程数量，建议设置为 CPU core 数                    
+workers = 2
+# pid文件位置，记录进程id，用于uwsgi关闭               
+pidfile = .../uwsgi.pid
+# 服务停止时自动移除pid
+vacuum = true
 
 # 启动
-socket = 127.0.0.1:8000           # socket
-daemonize = .../uwsgi.log         # 后台启动，日志位置
+# socket
+socket = 127.0.0.1:9000
+# 后台启动，日志位置        
+daemonize = .../uwsgi.log
 
 # 项目位置
-chdir = .../django-demo           # 项目根目录
-module = cms.wsgi:application     # 指定app
+# 项目根目录
+chdir = .../django-demo
+# 指定app
+module = cms.wsgi:application
 
 # gevent配置
-enable-threads = true             # 开启多线程，gevent下必须开启
-gevent = 100                      # 单个进程最大协程数
-gevent-early-monkey-patch = true  # 在加载app前自动打猴子补丁，必须设置为true
+# 开启多线程，gevent下必须开启
+enable-threads = false
+# 单个进程最大协程数           
+gevent = 100
+# 在加载app前自动打猴子补丁，必须设置为true
+gevent-early-monkey-patch = true
 
-# 配置优化
-max-requests = 10000              # 单个工作进程最大处理请求次数，之后重新加载
-lazy-apps = true                  # 在每个worker中加载app而不是master，如果设置为false，master加载app，然后fork给每个worker
-cpu-affinity = true               # 进程运行期时不切换 CPU core
-thunder-lock = true               # 序列化 accept() 用法（如果可能）
-socket-timeout = 30               # 连接超时时间，超时断开与客户端的连接，但是服务器端仍然运行
-harakiri = 30                     # 服务器响应超时时间，超时服务器强制终止
-harakiri-verbose = true           # 输出harakiri详细信息
-disable-logging = false           # 关闭request日志，生产环境建议关闭（true）
-memory-report = true              # 日志中输出内存占用情况，必须开启request日志，生产环境建议关闭（false）
-reload-on-as = 600                # 单次请求worker占用虚拟内存（单位M）上限，超过时该次结果返回后重启worker
-reload-on-rss = 100               # 单次请求worker占用物理内存（单位M）上限，超过时该次结果返回后重启worker
+# 优化配置
+# uWSGI instance平滑重启
+reload-mercy = 10
+# worker平滑重启
+worker-reload-mercy = 10
+# 单个工作进程最大处理请求次数，之后重新加载
+max-requests = 10000
+# 在每个worker中加载app而不是master，如果设置为false，master加载app，然后fork给每个worker
+lazy-apps = true
+# 进程运行期时不切换 CPU core                 
+cpu-affinity = true
+# 序列化 accept() 用法（如果可能）
+thunder-lock = true
+# 连接超时时间，超时断开与客户端的连接，但是服务器端仍然运行
+socket-timeout = 30
+# 服务器响应超时时间，超时服务器强制终止
+harakiri = 30
+# 输出harakiri详细信息
+harakiri-verbose = true
+# 关闭request日志，生产环境建议关闭（true）           
+disable-logging = true
+# 日志中输出内存占用情况，必须开启request日志，生产环境建议关闭（false）
+memory-report = true
+# 单次请求worker占用虚拟内存（单位M）上限，超过时该次结果返回后重启worker             
+reload-on-as = 600
+# 单次请求worker占用物理内存（单位M）上限，超过时该次结果返回后重启worker
+reload-on-rss = 100
 ``` 
 
 - uwsgi启动
