@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 class TimerMiddleware(BaseMiddleware):
 
     key: str = 'start_time'
-    threshold: float = 1.0
+    threshold: float = 2.0
 
     def process_request(self, request: ExtWSGIRequest) -> None:
         setattr(request.ext, self.key, time.time())
