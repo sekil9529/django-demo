@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 # app
 INSTALLED_APPS += [
-    'core.db.djorm_pool',
+    'django_mysql_geventpool',
     'app_demo',
     'app_user',
     'app_ugc',
@@ -24,18 +24,16 @@ MIDDLEWARE += [
     'core.middlewares.timer.TimerMiddleware',
 ]
 
-# DJORM POOL
-DJORM_POOL_OPTIONS = {
-    "pool_size": 20,
-    "max_overflow": 0,
-    "recycle": 60 * 60 * 2
+# 数据库配置
+GEVENT_POOL = {
+    'MAX_CONNS': 10,  # 最大连接数
+    'MAX_LIFETIME': 2 * 60 * 60,  # 连接时间
 }
-DJORM_POOL_PESSIMISTIC = False
 
-# 数据配置
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        # 'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django_mysql_geventpool.backends.mysql',
         'NAME': CONFIG_INFO['db']['database'],
         'HOST': CONFIG_INFO['db']['host'],
         'PORT': CONFIG_INFO['db']['port'],
@@ -44,7 +42,8 @@ DATABASES = {
         # 'CONN_MAX_AGE': 60 * 60 * 2,
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'init_command': 'set session transaction_isolation = "READ-COMMITTED"'
+            'init_command': 'set session transaction_isolation = "READ-COMMITTED"',
+            **GEVENT_POOL
         }
     }
 }
