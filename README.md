@@ -316,7 +316,7 @@ uwsgi --ini uwsgi.ini
 server {
     ...
     location / {
-        include .../nginx/conf/uwsgi_params;
+        include uwsgi_params;
         uwsgi_pass 127.0.0.1:8000;
     }
 }
