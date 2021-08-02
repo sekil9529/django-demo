@@ -7,7 +7,7 @@ from libs.config import Config
 # 配置
 CONFIG_INFO = Config(os.path.join(BASE_DIR, '.env')).format()
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 

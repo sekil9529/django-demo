@@ -101,6 +101,10 @@ nginx + uwsgi(gevnet) 部署
 │   ├── singleton.py             # 单例
 │   └── uuid.py                  # uuid生成
 
+├── monkey_patch                 # 猴子补丁
+│   ├── __init__.py              
+│   └── django...operations.py   # django.db.backends.mysql.operations 猴子补丁
+
 ├── manage.py                    # 项目启动
 ...
 ```
@@ -111,9 +115,9 @@ nginx + uwsgi(gevnet) 部署
 
 2. 重构models.py，多个模型可放入不同文件，避免协同开发导致冲突增加: `app_user.models`，`app_ugc.models`
 
-  - 使用 `models package` 代替 `models.py`
-  - models.\_\_init\_\_.py：导入全部模型
-  - models.xxx.py: 定义模型，外键定义统一使用模型名的的字符串形式 `"User"`，跨app外键关联啊使用app名.模型名 `"app_user.User"`
+    - 使用 `models package` 代替 `models.py`
+    - models.\_\_init\_\_.py：导入全部模型
+    - models.xxx.py: 定义模型，外键定义统一使用模型名的的字符串形式 `"User"`，跨app外键关联啊使用app名.模型名 `"app_user.User"`
 
 3. 大量使用 `Variable Annotations` 变量注释，提高代码可读性
 
@@ -146,34 +150,55 @@ nginx + uwsgi(gevnet) 部署
 
 10. 使用 `django-mysql-geventpool==0.2.5` 作为mysql连接池
 
-- 地址：https://github.com/shunsukeaihara/django-mysql-geventpool
+    - 地址：https://github.com/shunsukeaihara/django-mysql-geventpool
 
-- 个人配置
+    - 个人配置
 
-    ```
-    # cms/settings/development.py
-    INSTALLED_APPS += [
-        'django_mysql_geventpool',
-        ...
-    ]
-    
-    # 自定义全局变量，为了与django配置区分开
-    GEVENT_POOL = {
-        'MAX_CONNS': 25,  # 最大连接数
-        'MAX_LIFETIME': 60 * 60 * 2,  # 连接时间
-    }
-  
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django_mysql_geventpool.backends.mysql',
-            # 'CONN_MAX_AGE': 60 * 60 * 2,  
-            'OPTIONS': {
-                ...
-                **GEVENT_POOL
+        ```
+        # cms/settings/development.py
+        INSTALLED_APPS += [
+            'django_mysql_geventpool',
+            ...
+        ]
+        
+        # 自定义全局变量，为了与django配置区分开
+        GEVENT_POOL = {
+            'MAX_CONNS': 25,  # 最大连接数
+            'MAX_LIFETIME': 60 * 60 * 2,  # 连接时间
+        }
+      
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django_mysql_geventpool.backends.mysql',
+                # 'CONN_MAX_AGE': 60 * 60 * 2,  
+                'OPTIONS': {
+                    ...
+                    **GEVENT_POOL
+                }
             }
         }
-    }
-    ```
+        ```
+
+11. 利用猴子补丁解决pymysql导致异常: `monkey_patch.django_db_backends_mysql_operations`
+
+    - 官方推荐使用 MySQLdb模块，这里使用的是 `pymysql.install_as_MySQLdb()`，django-2.2 部分逻辑没有对 `pymysql` 模块进行兼容处理，当 `DEBUG = True` 启动会出现异常
+    
+        ```python
+        '''异常信息：
+        ...
+          File "...\django-demo\lib\site-packages\django\utils\functional.py", line 80, in __get__
+            res = instance.__dict__[self.name] = self.func(instance)
+          File "...\django-demo\lib\site-packages\django\db\backends\mysql\features.py", line 82, in is_sql_auto_is_null_enabled
+            cursor.execute('SELECT @@SQL_AUTO_IS_NULL')
+          File "...\django-demo\lib\site-packages\django\db\backends\utils.py", line 103, in execute
+            sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+          File "...\django-demo\lib\site-packages\django\db\backends\mysql\operations.py", line 146, in last_executed_query
+            query = query.decode(errors='replace')
+        AttributeError: 'str' object has no attribute 'decode'
+        '''
+        ```
+      
+    - 这里参照Github `django-3.1` 版本代码，利用猴子补丁替换原始 `DatabaseOperations`
 
 # 接口说明
 
