@@ -14,7 +14,7 @@ __all__ = (
 )
 
 
-@dataclass
+@dataclass(frozen=True)
 class ECData:
     """错误码数据"""
     code: str      # 错误码
