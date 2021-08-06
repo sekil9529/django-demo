@@ -2,9 +2,8 @@
 
 """错误码枚举类"""
 
-from typing import Tuple
+from typing import Tuple, NamedTuple
 from enum import Enum, EnumMeta
-from collections import namedtuple
 from types import DynamicClassAttribute
 
 from libs.enum import keyword_value_unique
@@ -15,12 +14,10 @@ __all__ = (
 )
 
 
-"""错误码数据
-
-code: str      # 错误码
-message: str   # 错误信息
-"""
-ECData = namedtuple('ECData', ('code', 'message'))
+class ECData(NamedTuple):
+    """错误码数据"""
+    code: str     # 错误码
+    message: str  # 错误信息
 
 
 class _ECEnumMeta(EnumMeta):
