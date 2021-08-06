@@ -21,6 +21,7 @@ CORS_          CORS配置
 """
 
 import os
+from itertools import chain
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -188,33 +189,22 @@ LOGGING = {
     },
 }
 
-
 # 跨域
+from corsheaders.defaults import default_methods, default_headers
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ()
 
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'VIEW',
-)
+# 允许的method
+CORS_ALLOW_METHODS = tuple(chain(default_methods, (
 
-CORS_ALLOW_HEADERS = (
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-)
+)))
+
+# 允许的header
+CORS_ALLOW_HEADERS = tuple(chain(default_headers, (
+
+)))
 
 # from rest_framework.versioning import URLPathVersioning
 # DRF
