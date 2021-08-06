@@ -2,8 +2,9 @@
 
 """错误码枚举类"""
 
+from typing import Tuple
 from enum import Enum, EnumMeta
-from dataclasses import dataclass
+from collections import namedtuple
 from types import DynamicClassAttribute
 
 from libs.enum import keyword_value_unique
@@ -14,11 +15,12 @@ __all__ = (
 )
 
 
-@dataclass(frozen=True)
-class ECData:
-    """错误码数据"""
-    code: str      # 错误码
-    message: str   # 错误信息
+"""错误码数据
+
+code: str      # 错误码
+message: str   # 错误信息
+"""
+ECData = namedtuple('ECData', ('code', 'message'))
 
 
 class _ECEnumMeta(EnumMeta):
@@ -31,7 +33,7 @@ class _ECEnumMeta(EnumMeta):
         return enum_class
 
     @property
-    def codes(cls) -> tuple:
+    def codes(cls) -> Tuple[str, ...]:
         return cls._member_codes_
 
 
