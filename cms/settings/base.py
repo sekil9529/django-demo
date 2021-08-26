@@ -192,8 +192,15 @@ LOGGING = {
 # 跨域
 from corsheaders.defaults import default_methods, default_headers
 
+# Set-Cookie: key=value; SameSite=None; Secure
+# 允许COOKIE
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
+# 禁用Cookie SameSite属性
+SESSION_COOKIE_SAMESITE = None
+# 启用Cookie Secure属性，此时必须是https，chrome浏览器强制要求
+SESSION_COOKIE_SECURE = True
+
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_WHITELIST = ()
 
 # 允许的method
