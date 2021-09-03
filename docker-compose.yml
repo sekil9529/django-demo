@@ -6,7 +6,7 @@ services:
     ports:
       - 8000:80
     volumes:
-      - .nginx.conf:/etc/nginx/conf/nginx.conf
+      - .nginx_conf:/etc/nginx/conf
   djangoDemo:
     build: .
     image: django-demo:1.0.0
