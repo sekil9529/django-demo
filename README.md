@@ -352,3 +352,7 @@ server {
 ```shell script
 nginx -s reload
 ```
+
+# docker环境部署
+
+docker-compose up -d
