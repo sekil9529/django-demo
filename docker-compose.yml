@@ -11,5 +11,7 @@ services:
     build: .
     image: django-demo:1.0.0
     container_name: django-demo
+    volumes:
+      - ./logs:/opt/logs
 
 
