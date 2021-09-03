@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  nginx:
+    container_name: django-demo-nginx
+    image: nginx:1.19-alpine
+    ports:
+      - 8000:80
+  djangoDemo:
+    build: .
+    image: django-demo:1.0.0
+    container_name: django-demo
+
+
