@@ -105,6 +105,14 @@ nginx + uwsgi(gevnet) 部署
 │   ├── __init__.py              
 │   └── django...operations.py   # django.db.backends.mysql.operations 猴子补丁
 
+├── nginx_conf                   # nginx配置目录
+│   ├── django-demo.conf         # nginx配置文件
+
+├── Dockerfile                   # Dockerfile文件
+├── docker-compose.yml           # docker-compose配置文件
+
+├── uwsgi.ini                    # uwsgi配置文件
+
 ├── manage.py                    # 项目启动
 ...
 ```
@@ -354,6 +362,16 @@ nginx -s reload
 ```
 
 # docker环境部署
+
+1. 安装配置docker
+
+2. 安装docker-compose
+
+3. git pull
+
+4. 配置env文件
+
+5. docker-compose启动项目
 
 ```shell script
 docker-compose up -d

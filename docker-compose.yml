@@ -13,5 +13,3 @@ services:
     container_name: django-demo
     volumes:
       - ./logs:/opt/logs
-
-
