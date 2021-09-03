@@ -5,6 +5,8 @@ services:
     image: nginx:1.19-alpine
     ports:
       - 8000:80
+    volumes:
+      .nginx.conf:/etc/nginx/conf/nginx.conf
   djangoDemo:
     build: .
     image: django-demo:1.0.0
