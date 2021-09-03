@@ -355,4 +355,6 @@ nginx -s reload
 
 # docker环境部署
 
+```shell script
 docker-compose up -d
+```
