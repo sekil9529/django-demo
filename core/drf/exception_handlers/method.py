@@ -1,5 +1,6 @@
 # coding: utf-8
-from typing import Type
+
+from __future__ import annotations
 
 from django.http import JsonResponse
 from rest_framework.exceptions import MethodNotAllowed
@@ -12,7 +13,7 @@ from core.error_code import ECEnum
 class MethodExcHandler(BaseExcHandler):
     """请求方式异常处理"""
 
-    def get_exception(self) -> Type[Exception]:
+    def get_exception(self) -> type[Exception]:
         return MethodNotAllowed
 
     def handler(self, exception: MethodNotAllowed, context: dict) -> JsonResponse:

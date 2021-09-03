@@ -1,13 +1,14 @@
 # coding: utf-8
 
-from typing import Type, Sequence
+from __future__ import annotations
+from collections.abc import Sequence
 from enum import Enum, unique
 
 
 def index_value_unique(indexes: Sequence[int]):
     """装饰器：枚举成员的某个下标元素唯一"""
 
-    def wrapper(enumeration: Type[Enum]):
+    def wrapper(enumeration: type[Enum]):
         enumeration = unique(enumeration)
         for index in indexes:
             number_set = set()
@@ -27,7 +28,7 @@ def first_value_unique(enumeration):
 
 def keyword_value_unique(keywords: Sequence[str]):
     """装饰器：枚举成员的某个关键字唯一"""
-    def wrapper(enumeration: Type[Enum]):
+    def wrapper(enumeration: type[Enum]):
         enumeration = unique(enumeration)
         for keyword in keywords:
             number_set = set()

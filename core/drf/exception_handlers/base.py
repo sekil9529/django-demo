@@ -1,7 +1,7 @@
 # coding: utf-8
 
+from __future__ import annotations
 import abc
-from typing import Type
 
 from django.http import JsonResponse
 
@@ -12,7 +12,7 @@ class BaseExcHandler(metaclass=abc.ABCMeta):
     __slots__ = ()
 
     @abc.abstractmethod
-    def get_exception(self) -> Type[Exception]:
+    def get_exception(self) -> type[Exception]:
         pass
 
     @abc.abstractmethod

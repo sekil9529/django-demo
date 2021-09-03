@@ -1,6 +1,7 @@
 # coding: utf-8
 
-from typing import Optional, Dict, Any
+from __future__ import annotations
+from typing import Optional, Any
 from configparser import RawConfigParser as ConfigParser
 
 
@@ -14,7 +15,7 @@ class Config:
         self._cnf = ConfigParser()
         self._cnf.read(file_path, encoding=encoding)
 
-    def format(self) -> Dict[str, Any]:
+    def format(self) -> dict[str, Any]:
         """格式化"""
         if self._section is None:
             return {section: dict(self._cnf.items(section)) for section in self._cnf.sections()}

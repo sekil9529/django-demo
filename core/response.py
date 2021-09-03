@@ -2,7 +2,8 @@
 
 """响应相关配置"""
 
-from typing import Any, Dict, Optional
+from __future__ import annotations
+from typing import Any, Optional
 from decimal import Decimal
 from datetime import datetime
 
@@ -32,7 +33,7 @@ def response_ok(data: Any = None) -> JsonResponse:
     # 错误码
     code: str = '0'
     # 内容
-    content: Dict[str, Any] = dict(code=code, data=data)
+    content: dict[str, Any] = dict(code=code, data=data)
     return JsonResponse(content, encoder=ExtJsonEncoder)
 
 
@@ -54,7 +55,7 @@ def response_fail(
     # 错误信息
     message: str = enum.message
     # 内容
-    content: Dict[str, Any] = dict(code=code, error=error, message=message, desc=desc)
+    content: dict[str, Any] = dict(code=code, error=error, message=message, desc=desc)
     # 响应状态码
     status_code = 500 if code == '500' else 400
     return JsonResponse(content, encoder=ExtJsonEncoder, status=status_code)

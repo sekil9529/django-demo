@@ -2,7 +2,8 @@
 
 """错误码枚举类"""
 
-from typing import Tuple, NamedTuple
+from __future__ import annotations
+from typing import NamedTuple
 from enum import Enum, EnumMeta
 from types import DynamicClassAttribute
 
@@ -30,7 +31,7 @@ class _ECEnumMeta(EnumMeta):
         return enum_class
 
     @property
-    def codes(cls) -> Tuple[str, ...]:
+    def codes(cls) -> tuple[str, ...]:
         return cls._member_codes_
 
 

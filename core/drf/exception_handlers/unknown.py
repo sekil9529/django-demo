@@ -1,7 +1,7 @@
 # coding: utf-8
 
+from __future__ import annotations
 import logging
-from typing import Type
 
 from django.http import JsonResponse
 
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 
 class UnknownExcHandler(BaseExcHandler):
 
-    def get_exception(self) -> Type[Exception]:
+    def get_exception(self) -> type[Exception]:
         return Exception
 
     def handler(self, exception: Exception, context: dict) -> JsonResponse:

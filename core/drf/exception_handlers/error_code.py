@@ -1,5 +1,6 @@
 # coding: utf-8
-from typing import Type
+
+from __future__ import annotations
 
 from django.http import JsonResponse
 
@@ -10,7 +11,7 @@ from core.response import response_fail
 
 class ErrorCodeExcHandler(BaseExcHandler):
 
-    def get_exception(self) -> Type[Exception]:
+    def get_exception(self) -> type[Exception]:
         return ECException
 
     def handler(self, exception: ECException, context: dict) -> JsonResponse:

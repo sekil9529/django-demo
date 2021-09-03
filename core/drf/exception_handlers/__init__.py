@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from typing import List
+from __future__ import annotations
 from django.http import JsonResponse
 
 from .base import BaseExcHandler
@@ -11,7 +11,7 @@ from core.response import response_fail
 
 
 # 异常处理实例列表
-_EXC_HANDLER_LIST: List[BaseExcHandler] = sorted((
+_EXC_HANDLER_LIST: list[BaseExcHandler] = sorted((
     UnknownExcHandler(),
     MethodExcHandler(),
     ErrorCodeExcHandler(),
