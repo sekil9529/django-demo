@@ -10,7 +10,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
   && python -m pip install --upgrade pip \
   && pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com \
   && pip install uwsgi -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com \
-  && apk del gcc g++ make libressl-dev musl-dev libffi-dev python3-dev \
+  # libressl-dev uwsgi需要，不可删除
+  && apk del gcc g++ make musl-dev libffi-dev python3-dev \
   && apk del curl jq py3-configobj py3-pip py3-setuptools \
   && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   && echo 'Asia/Shanghai' >/etc/timezone  \
