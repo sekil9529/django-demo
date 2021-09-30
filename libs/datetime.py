@@ -2,7 +2,7 @@
 
 from typing import Union
 import calendar
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 
 
 def from_unix_timestamp(secs: float) -> datetime:
@@ -14,10 +14,8 @@ def from_unix_timestamp(secs: float) -> datetime:
     return dt
 
 
-def to_unix_timestamp(dt: Union[datetime, date]) -> float:
+def to_unix_timestamp(dt: datetime) -> float:
     """datetime转时间戳"""
-    if isinstance(dt, date):
-        dt = datetime(dt.year, dt.month, dt.day)
     try:
         secs = dt.timestamp()
     except OSError:  # 兼容windows环境
