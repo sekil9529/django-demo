@@ -43,7 +43,7 @@ DATABASES = {
         # 'CONN_MAX_AGE': 60 * 60 * 2,
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'init_command': 'set session transaction_isolation = "READ-COMMITTED"',
+            'isolation_level': 'read committed',
             **GEVENT_POOL
         }
     }
