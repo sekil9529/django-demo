@@ -1,5 +1,5 @@
 FROM python:3.7-alpine
-WORKDIR /opt
+WORKDIR /opt/django-demo
 # 系统环境变量
 ENV ENV=production
 COPY pip.conf /etc
