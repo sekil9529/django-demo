@@ -6,10 +6,12 @@ services:
     ports:
       - 8000:80
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./nginx_conf:/etc/nginx/conf.d
   djangoDemo:
     build: .
     image: django-demo:1.0.0
     container_name: django-demo
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./logs:/opt/django-demo/logs
