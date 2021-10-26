@@ -18,8 +18,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
   #  && apk add -U tzdata \
   #  && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
   #  && echo 'Asia/Shanghai' > /etc/timezone  \
-  && echo "net.core.somaxconn = 1024" >> /etc/sysctl.conf \
-  && sysctl -p \
+  && sysctl -w net.core.somaxconn=1024 \
   && rm -rf /var/cache/apk/*
 COPY . .
 # 对外暴露端口
