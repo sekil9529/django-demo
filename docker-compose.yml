@@ -10,6 +10,8 @@ services:
       - ./nginx_conf:/etc/nginx/conf.d
   djangoDemo:
     build: .
+    sysctls:
+      - net.core.somaxconn=1024
     image: django-demo:1.0.0
     container_name: django-demo
     volumes:
