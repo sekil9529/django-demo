@@ -1,15 +1,15 @@
 # coding: utf-8
 
 import time
-import logging
 from typing import Optional, Callable
 
 from django.http import HttpResponse
 
 from core.wsgi import ExtWSGIRequest
 from .base import BaseMiddleware
+from libs.logger_proxy import LoggerProxy
 
-log = logging.getLogger(__name__)
+logger = LoggerProxy(__name__)
 
 
 class TimerMiddleware(BaseMiddleware):
@@ -30,5 +30,5 @@ class TimerMiddleware(BaseMiddleware):
         if hasattr(request.ext, self.key):
             diff = time.time() - getattr(request.ext, self.key)
             if diff > self.threshold:
-                log.warning('response timeout: %.6f' % diff)
+                logger.warning('%s response timeout: %.6f' % (request.get_full_path(), diff))
         return response
