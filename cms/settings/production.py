@@ -26,7 +26,7 @@ MIDDLEWARE += [
 
 # 数据库配置
 GEVENT_POOL = {
-    'MAX_CONNS': 15,  # 最大连接数
+    'MAX_CONNS': 25,  # 最大连接数
     'MAX_LIFETIME': 2 * 60 * 60,  # 连接时间
 }
 
