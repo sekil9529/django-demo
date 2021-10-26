@@ -15,9 +15,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
   && apk del gcc g++ make musl-dev libffi-dev python3-dev \
   && apk del curl jq py3-configobj py3-pip py3-setuptools \
   # 安装时区工具
-  && apk add -U tzdata \
-  && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-  && echo 'Asia/Shanghai' > /etc/timezone  \
+  #  && apk add -U tzdata \
+  #  && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+  #  && echo 'Asia/Shanghai' > /etc/timezone  \
+  && echo "net.core.somaxconn = 1024" >> /etc/sysctl.conf \
   && rm -rf /var/cache/apk/*
 COPY . .
 # 对外暴露端口
